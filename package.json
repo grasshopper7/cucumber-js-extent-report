@@ -1,7 +1,7 @@
 {
   "name": "cucumber-js-extent-report",
   "version": "1.0.0",
-  "description": "",
+  "description": "This formatter generates the Spark Extent report",
   "main": "./extent/adapter/extent_adapter.js",
   "scripts": {
     "test": "cucumber-js --tags \"@all\" --format ./extent/adapter/extent_adapter.js:spark.html --format html:report.html"
@@ -10,13 +10,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "chai": "^4.3.4"
+  },
+  "dependencies": {
     "@cucumber/cucumber": "^9.1.2",
-    "chai": "^4.3.4",
-    "selenium-webdriver": "^4.4.0",
     "nunjucks": "^3.2.4",
     "dayjs": "^1.11.8",
     "humanize-duration": "^3.28.0",
     "ansi-to-html": "^0.7.2"
-  },
-  "dependencies": {}
+  }
 }
