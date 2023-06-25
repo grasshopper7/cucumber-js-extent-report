@@ -4,7 +4,8 @@ const humanizeDuration = require("humanize-duration");
 
 class NunjuckRender {
   render(report) {
-    const env = nunjucks.configure("extent/view", { autoescape: true });
+    const env = nunjucks.configure(__dirname, { autoescape: true });
+
     env.addFilter("time", function (date) {
       return date.format("h:m:s A");
     });
