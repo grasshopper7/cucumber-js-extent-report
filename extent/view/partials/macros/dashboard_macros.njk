@@ -1,0 +1,87 @@
+{% macro dashboard_stats(key, value) %}
+	<div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <p class="m-b-0">{{ key }}</p>
+          <h3>{{ value }}</h3>
+        </div>
+      </div>
+    </div>
+{% endmacro %}
+
+{% macro dashboard_charts(key, canvasid, counts) %}
+	<div class="col-md-4">
+		<div class="card">
+			<div class="card-header">
+				<h6 class="card-title">{{ key }}</h6>
+			</div>
+			<div class="card-body">
+				<div class="">
+					<canvas id={{ canvasid }} width='115' height='90'></canvas>
+				</div>
+			</div>
+			<div class="card-footer">
+				<div><b>{{ counts.get("Pass") }}</b><small> {{key | lower}} passed</small></div>
+				<div><b>{{ counts.get("Fail") }}</b><small> {{key | lower}} failed, </small><b>{{ counts.get("Skip") }}</b><small> {{key | lower}} skipped</small></div>
+			</div>
+		</div>
+	</div>
+{% endmacro %}
+
+{% macro dashboard_timeline() %}
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-header"><p>Timeline</p></div>
+			<div class="card-body pt-0">
+				<div><canvas id="timeline" height="120"></canvas></div>
+			</div>
+		</div>
+	</div>
+{% endmacro %}
+
+{% macro dashboard_context(title, contexts) %}
+	<div class="col-lg-6 col-md-12 {{ title | lower }}-container">
+		<div class="card">
+			<div class="card-header"><p>{{ title }}</p></div>
+			<div class="card-body pb-0 pt-0">
+				<table class="table table-sm table-bordered">
+					<thead>
+						<tr class="bg-gray">
+							<th>Name</th><th>Passed</th><th>Failed</th><th>Skipped</th><th>Passed %</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for cat, context in contexts %}
+							<tr>
+								<td>{{ context.name }}</td>
+								<td>{{ context.passCnt }}</td>
+								<td>{{ context.failCnt }}</td>
+								<td>{{ context.skipCnt }}</td>
+								<td>{{ (context.passCnt * 100)//(context.passCnt+context.failCnt+context.skipCnt) }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>	
+{% endmacro %}
+
+{% macro dashboard_sysenv( contexts) %}
+	<div class="col-lg-6 col-md-12 sysenv-container">
+		<div class="card">
+			<div class="card-header"><p>System/Environment</p></div>
+			<div class="card-body pb-0 pt-0"><table class="table table-sm table-bordered">
+				<thead><tr class="bg-gray"><th>Name</th><th>Value</th></tr></thead>
+				<tbody>
+					{% for name, value in contexts %}
+						<tr>
+							<td>{{ name }}</td>
+							<td>{{ value }}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table></div>
+		</div>
+	</div>
+{% endmacro %}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+{% include "partials/head.njk" %}
+<body class="spa bdd-report dark">
+  <div class="app">
+    <div class="layout">
+      {% include "partials/navbar.njk" %}
+      {% include "partials/sidenav.njk" %}
+      <div class="vcontainer">
+        <div class="main-content">
+          
+          {% include "partials/test.njk" %}     
+          {% include "partials/dashboard.njk" %}
+          {% include "partials/exception.njk" %}
+          {% include "partials/category.njk" %}
+          {% include "partials/device.njk" %}     
+          {% include "partials/author.njk" %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% include "partials/scripts.njk" %}
+</body>
+</html>

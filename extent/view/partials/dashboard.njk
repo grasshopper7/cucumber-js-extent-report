@@ -1,0 +1,76 @@
+{% import "partials/macros/dashboard_macros.njk" as dashboarddisplay %}
+
+<div class="container-fluid p-4 view dashboard-view">
+  <div class="row">
+   
+    {{ dashboarddisplay.dashboard_stats("Started", report.startTime | fulldatetime) }}
+    {{ dashboarddisplay.dashboard_stats("Ended", report.endTime | fulldatetime) }}
+    {{ dashboarddisplay.dashboard_stats("Features Passed", report.stats.statusFeatureCounts.get("Pass")) }}
+    {{ dashboarddisplay.dashboard_stats("Features Failed", report.stats.statusFeatureCounts.get("Fail")) }}  
+  </div>
+
+  <div class="row">
+
+    {{ dashboarddisplay.dashboard_charts("Features", "parent-analysis", report.stats.statusFeatureCounts) }}
+    {{ dashboarddisplay.dashboard_charts("Scenarios", "child-analysis", report.stats.statusScenarioCounts) }}
+    {{ dashboarddisplay.dashboard_charts("Steps", "grandchild-analysis", report.stats.statusStepCounts) }}
+  </div> 
+
+  <div class="row">
+    {{ dashboarddisplay.dashboard_timeline() }}    
+  </div>
+  
+  <script>
+    var timeline = {
+    {% for test in report.tests %}
+      "{{ test.name }}":{{ test.duration/1000 }},
+    {% endfor %}
+    };
+  </script>
+
+  <div class="row">
+    {% if report.stats.authors.size > 0 %}
+      {{ dashboarddisplay.dashboard_context("Author",report.stats.authors) }}
+    {% endif %}
+
+    {% if report.stats.categories.size > 0 %}
+      {{ dashboarddisplay.dashboard_context("Category",report.stats.categories) }}
+    {% endif %}
+
+    {% if report.stats.devices.size > 0 %}
+      {{ dashboarddisplay.dashboard_context("Device",report.stats.devices) }}
+    {% endif %}
+
+    {% if report.stats.sysEnv.size > 0 %}
+      {{ dashboarddisplay.dashboard_sysenv(report.stats.sysEnv) }}
+    {% endif %}
+
+  </div>
+
+
+</div>
+
+<script>
+  var statusGroup = {
+    parentCount: {{ report.stats.statusFeatureCounts.size }},
+    passParent: {{ report.stats.statusFeatureCounts.get('Pass') }},
+    failParent: {{ report.stats.statusFeatureCounts.get('Fail') }},
+    warningParent: {{ report.stats.statusFeatureCounts.get('Warn') }},
+    skipParent: {{ report.stats.statusFeatureCounts.get('Skip') }},
+    infoParent: {{ report.stats.statusFeatureCounts.get('Info') }},
+
+    childCount: {{ report.stats.statusScenarioCounts.size }},
+    passChild: {{ report.stats.statusScenarioCounts.get('Pass') }},
+    failChild: {{ report.stats.statusScenarioCounts.get('Fail') }},
+    warningChild: {{ report.stats.statusScenarioCounts.get('Warn') }},
+    skipChild: {{ report.stats.statusScenarioCounts.get('Skip') }},
+    infoChild: {{ report.stats.statusScenarioCounts.get('Info') }},
+
+    grandChildCount: {{ report.stats.statusStepCounts.size }},
+    passGrandChild: {{ report.stats.statusStepCounts.get('Pass') }},
+    failGrandChild: {{ report.stats.statusStepCounts.get('Fail') }},
+    warningGrandChild: {{ report.stats.statusStepCounts.get('Warn') }},
+    skipGrandChild: {{ report.stats.statusStepCounts.get('Skip') }},
+    infoGrandChild: {{ report.stats.statusStepCounts.get('Info') }},
+  };
+</script>

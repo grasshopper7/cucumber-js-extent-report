@@ -1,0 +1,82 @@
+{% macro attribute_display(attrType, attributes) %}
+	{% if attributes.size >0 %}
+	<div class="test-wrapper row view {{ attrType | lower }}-view attributes-view">
+		<div class="test-list">
+			{{ attributes_summary(attrType ,attributes.size) }}
+			
+			<div class="test-list-wrapper scrollable">
+				
+				<ul class="test-list-item">
+					{% for att, attribute in attributes %}
+						
+						<li class="test-item">
+							
+							{{ attribute_details(attribute) }}
+							{{ attribute_tests_details(attribute) }}    
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		
+		<div class="test-content scrollable">
+			<div class="test-content-detail">
+				<div class="detail-body"></div>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+{% endmacro %}
+
+{% macro attributes_summary(attrName, attrSize) %}
+	<div class="test-list-tools">
+		<ul class="tools pull-left"><li><a href=""><span class="font-size-14">{{ attrName }}</span></a></li></ul>
+		<ul class="tools text-right"><li><a href="#"><span class="badge badge-primary">{{ attrSize }}</span></a></li></ul>
+	</div>
+{% endmacro %}
+
+{% macro attribute_details(attribute) %}
+  <div class="test-detail">
+		<span class="meta">
+			{% if attribute.passCnt > 0 %}<span class='badge log pass-bg'>{{ attribute.passCnt }}</span>{% endif %}
+			{% if attribute.failCnt > 0 %}<span class='badge log badge-danger'>{{ attribute.failCnt }}</span>{% endif %}
+			{% if attribute.skipCnt > 0 %}<span class='badge log badge-skip'>{{ attribute.skipCnt }}</span>{% endif %}
+		</span>
+		<p class="name">{{ attribute.name }}</p>
+		<p class="duration text-sm">{{ attribute.tests.length }} tests</p>
+	</div>
+{% endmacro %}
+
+{% macro attribute_tests_details(attribute) %}
+	<div class="test-contents d-none">
+		<div class="info">
+			<h4>{{ attribute.name }}</h4>
+			{% if attribute.passCnt > 0 %}<span status="pass" class='badge log pass-bg'>{{ attribute.passCnt }}</span>{% endif %}
+			{% if attribute.failCnt > 0 %}<span status="fail" class='badge log badge-danger'>{{ attribute.failCnt }}</span>{% endif %}
+			{% if attribute.skipCnt > 0 %}<span status="skip" class='badge log badge-skip'>{{ attribute.skipCnt }}</span>{% endif %}
+		</div>
+		<table class='table table-sm mt-4'>
+			<thead>
+				<tr>
+					<th class="status-col">Status</th>
+					<th class="timestamp-col">Timestamp</th>
+					<th>TestName</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for test in attribute.tests %}
+					<tr class="tag-test-status" status={{test.status | lower}}>
+						<td><span class="badge log {{test.status | lower}}-bg">{{test.status | title}}</span></td>
+						<td>{{test.start | fulldatetime}}</td>
+						<td>
+							<a href="#" class="linked" test-id={{test.ancestorId}} id={{test.id}}>{{test.name}}</a>
+							<div class="">
+								<span class="badge badge-default">{{test.fullName}}</span>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endmacro %}

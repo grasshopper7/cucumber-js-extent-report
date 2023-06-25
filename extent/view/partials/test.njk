@@ -1,0 +1,41 @@
+{# {% import "partials/macros/test_macros.njk" as testdisplay %} #}
+
+<div class="test-wrapper row view test-view">
+  <div class="test-list">
+    <div class="test-list-tools">
+      <ul class="tools pull-left">
+        <li><a href="#"><span class="font-size-14">Tests</span></a></li>
+      </ul>
+  
+	    {# Search tools html snippet#}
+      <ul class="tools text-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-exclamation-circle"></i></a>
+        </li>
+        
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i></a>
+        </li>
+        
+        <li class="dropdown">
+         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tag"></i></a>
+        </li>
+        
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tablet"></i></a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="test-list-wrapper scrollable">
+      {% include "partials/testsdisplay.njk" %}    	
+    </div>
+  </div>
+
+  <div class="test-content scrollable">
+      <div class="test-content-tools">
+          <ul><li><a class="back-to-test" href="#"><i class="fa fa-arrow-left"></i></a></li></ul>
+      </div>
+      <div class="test-content-detail"><div class="detail-body"></div></div>
+  </div>
+</div>

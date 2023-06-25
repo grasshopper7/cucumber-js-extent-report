@@ -1,0 +1,74 @@
+{% macro step_logs_display(step) %}
+    {% for log in step.logs %}
+			{% if log.type == 'attachment' %}
+				{% if log.text %}
+					<details>
+						<summary>Text Log</summary>
+						<pre>{{ log.text }}</pre>
+					</details>
+				{% elif log.video %}
+					<details>
+						<summary>Video Log</summary>
+						<video controls>
+						<source src="data:{{ log.mediatype }};base64,{{ log.video | trim}}" />
+						Your browser is unable to display video
+						</video>
+					</details>
+				{% elif log.image %}
+					<details>
+						<summary>Image Log</summary>	
+						<div class="row mb-3"><div class="col-md-3">
+							<a href="data:{{ log.mediatype }};base64,{{ log.image | trim}}" class="base64-img" data-featherlight="image">
+								<img src="data:{{ log.mediatype }};base64,{{ log.image | trim}}" />
+							</a>
+						</div></div>
+					</details>
+				{% else %}
+					<details>
+						<summary>Invalid '{{ log.mediatype }}' Log</summary>
+						<pre>{{ log.error }}</pre>
+					</details>	
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+{% endmacro %}
+
+{% macro step_error_display(step) %}
+	{% for log in step.logs %}
+		{% if log.type == 'error' %}
+			<div class="row"><div class="col-md-12">
+				<textarea disabled class="code-block">{{ log.message }}</textarea>
+			</div></div>
+		{% endif %}
+	{% endfor %}
+{% endmacro %}
+
+{% macro step_docstring(step) %}
+	{% for log in step.logs %}
+		{% if log.type == 'docstring' %}
+			<div class="row"><div class="col-md-12">
+				<textarea readonly class="code-block">{{ log.content }}</textarea>
+			</div></div>
+		{% endif %}
+	{% endfor %}
+{% endmacro %}
+
+{% macro step_datatable(step) %}
+	{% for log in step.logs %}
+		{% if log.type == 'datatable' %}
+			<div>
+				<table class="markup-table table ">
+					<tbody>
+						{% for row in log.table %}
+							<tr>
+							{% for cell in row%}
+								<td> {{cell}} </td>
+							{% endfor %}
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% endif %}
+	{% endfor %}
+{% endmacro %}

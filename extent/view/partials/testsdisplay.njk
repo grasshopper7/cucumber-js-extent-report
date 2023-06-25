@@ -1,0 +1,104 @@
+{% import "partials/macros/test_macros.njk" as testdisplay %}
+
+<ul class="test-list-item">
+	{% for test in report.tests %}
+
+		<li class="test-item"  status="{{test.status | lower}}" test-id="{{test.id}}" author="" tag="" device="">
+			
+			{# Left side Feature details #}
+			<div class="test-detail">
+				<p class="name">{{ test.name }}</p>
+				<p class="text-sm">
+					<span>{{ test.start | time}}</span> / <span>{{ test.duration | duration}}</span>
+						<span class="badge {{test.status | lower}}-bg log float-right">{{ test.status }}</span>
+				</p>
+			</div>
+
+			{# Right side Feature details top #}
+			<div class="test-contents d-none">
+				<div class="detail-head">
+					<div class="p-v-10">
+						<div class="info">
+							<h5 class="test-status text-{{test.status | lower}}">{{test.name}}</h5>
+							<span class='badge badge-success'>{{test.start | datetime}}</span>
+							<span class='badge badge-danger'>{{test.end | datetime}}</span>
+							<span class='badge badge-default'>{{test.duration | duration}}</span>&middot; 
+							<span class='uri-anchor badge badge-default'>#test-id={{test.id}}</span>
+							<span class='badge badge-default pointer float-right ml-1 et'><i class="fa fa-chevron-down"></i></span>
+							<span class='badge badge-default pointer float-right ct'><i class="fa fa-chevron-up"></i></span>
+						</div>
+						{% if test.description %}
+							<div class="m-t-10 m-l-5">{{test.description | trim}} </div>
+						{% endif %}
+					</div>
+				</div>
+
+				{# Right side SC,SO -> Step details #}
+				<div class="accordion mt-4">
+
+					{# Scenario or Scenario Outline level #}
+					{% for scenorout in test.childTests %}
+						<div class="card">
+    					<div class="card-header" role="tab">
+      					<div class="card-title">
+        					<div class="node" id="{{scenorout.id}}"><span class="badge log {{ scenorout.status | lower}}-bg mr-2">{{ scenorout.status }}</span>{{ scenorout.name }}</div>
+								</div>
+							</div>
+
+							{# Scenario Outline level #}
+							{% if scenorout.type == "Scenario Outline" %}
+								{% set collapseSO = "collapse" if scenorout.status == 'Pass' else ""%}
+								<div class="scenario_outline {{collapseSO}}">
+									
+									{# Scenario Scenario Outline level #}
+									{% for exrow in scenorout.childTests %}
+										<div class="card-body l1">
+              				<div class="card-header">
+                				<div class="card-title outline-child">
+                  				<div class="node" id="{{exrow.id}}"><span class="badge log {{ exrow.status | lower}}-bg mr-2">{{ exrow.status }}</span>{{ exrow.name }}</div>
+												</div>
+											</div>
+
+											{# Step Scenario Outline level #}
+											{% set collapseStepSO = "collapse" if exrow.status == 'Pass' else ""%}
+											<div class="card-body mt-3 {{ collapseStepSO }}">
+                				{% for step in exrow.childTests %}
+                  				<div class="step {{ step.status | lower}}-bg">
+                    				<span>{{step.type}} {{ step.name }}</span>
+														{{ testdisplay.step_docstring(step) }}
+														{{ testdisplay.step_datatable(step) }}
+														{{ testdisplay.step_error_display(step)}}
+														{{ testdisplay.step_logs_display(step) }}
+				                  </div>
+                				{% endfor %}
+              				</div>
+										</div>
+									{% endfor %}
+								</div>
+							{% else %}
+
+								{# Step Scenario level #}
+								{% set collapseStepSc = "collapse" if scenorout.status == 'Pass' else ""%}
+									<div class="{{ collapseStepSc }}">
+										<div class="card-body">
+                			{% for step in scenorout.childTests %}
+                  			<div class="step {{ step.status | lower}}-bg">
+                    			<span>{{step.type}} {{ step.name }}</span>
+													{{ testdisplay.step_docstring(step) }}
+													{{ testdisplay.step_datatable(step) }}													
+													{{ testdisplay.step_error_display(step)}}
+													{{ testdisplay.step_logs_display(step) }}
+				                </div>
+                			{% endfor %}
+              				</div>
+										</div>		
+							{% endif %}
+
+						</div>	
+					{% endfor %}
+				</div>
+
+			</div>
+		</li>
+	{% endfor %}
+</ul>
