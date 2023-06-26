@@ -4,6 +4,8 @@ const humanizeDuration = require("humanize-duration");
 
 class NunjuckRender {
   render(report) {
+    const config = require(process.cwd() + "/extent-config.json");
+
     const env = nunjucks.configure(__dirname, { autoescape: true });
 
     env.addFilter("time", function (date) {
@@ -38,7 +40,7 @@ class NunjuckRender {
       });
     });
 
-    return nunjucks.render("./spark.njk", { report: report });
+    return env.render("./spark.njk", { report: report, config: config });
   }
 }
 
