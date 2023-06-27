@@ -1,7 +1,7 @@
 const { Author, Category, Device, Exception } = require("./test_attribute.js");
 
 class ReportStats {
-  constructor(tests, sysEnv) {
+  constructor(tests, config) {
     const statuses = { Fail: 0, Skip: 0, Pass: 0, Warn: 0, Info: 0 };
     this.statusFeatureCounts = new Map(Object.entries(statuses));
     this.statusScenarioCounts = new Map(Object.entries(statuses));
@@ -12,9 +12,18 @@ class ReportStats {
     this.devices = new Map();
     this.exceptions = new Map();
 
-    this.sysEnv = sysEnv;
-
+    this.processSysEnv(config);
     this.processTests(tests);
+  }
+
+  processSysEnv(config) {
+    this.sysEnv = new Map();
+
+    if (config && config.sysenv) {
+      try {
+        this.sysEnv = new Map(Object.entries(config.sysenv));
+      } catch (e) {}
+    }
   }
 
   processTests(tests) {

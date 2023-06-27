@@ -10,23 +10,24 @@
   </div>
 
   <div class="row">
-
     {{ dashboarddisplay.dashboard_charts("Features", "parent-analysis", report.stats.statusFeatureCounts) }}
     {{ dashboarddisplay.dashboard_charts("Scenarios", "child-analysis", report.stats.statusScenarioCounts) }}
     {{ dashboarddisplay.dashboard_charts("Steps", "grandchild-analysis", report.stats.statusStepCounts) }}
   </div> 
 
-  <div class="row">
-    {{ dashboarddisplay.dashboard_timeline() }}    
-  </div>
-  
-  <script>
-    var timeline = {
-    {% for test in report.tests %}
-      "{{ test.name }}":{{ test.duration/1000 }},
-    {% endfor %}
-    };
-  </script>
+  {% if report.config.timelineEnabled == true%}
+    <div class="row">
+      {{ dashboarddisplay.dashboard_timeline() }}    
+    </div>
+    
+    <script>
+      var timeline = {
+      {% for test in report.tests %}
+        "{{ test.name }}":{{ test.duration/1000 }},
+      {% endfor %}
+      };
+    </script>
+  {% endif %}
 
   <div class="row">
     {% if report.stats.authors.size > 0 %}
@@ -44,10 +45,7 @@
     {% if report.stats.sysEnv.size > 0 %}
       {{ dashboarddisplay.dashboard_sysenv(report.stats.sysEnv) }}
     {% endif %}
-
   </div>
-
-
 </div>
 
 <script>

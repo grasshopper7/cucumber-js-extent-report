@@ -17,6 +17,7 @@
     "nunjucks": "^3.2.4",
     "dayjs": "^1.11.8",
     "humanize-duration": "^3.28.0",
-    "ansi-to-html": "^0.7.2"
+    "ansi-to-html": "^0.7.2",
+    "merge-json": "^0.1.0-b.3"
   }
 }

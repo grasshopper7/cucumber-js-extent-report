@@ -111,13 +111,7 @@ class ExtentCucumberJSAdapter extends Formatter {
       testCaseAttempt.pickle.tags.forEach((t) =>
         scenarioTest.categories.push(t.name)
       );
-      //---
-      scenarioTest.authors.push("auth1");
-      scenarioTest.authors.push("auth2");
-      scenarioTest.authors.push("auth3");
-      scenarioTest.devices.push("dev1");
-      scenarioTest.devices.push("dev2");
-      //---
+
       scenarioTestParent.addChildTest(scenarioTest);
 
       //STEP & HOOK Extent Test
@@ -164,21 +158,10 @@ class ExtentCucumberJSAdapter extends Formatter {
       updateTestTimesAndStatus(scenarioTest);
     });
 
-    //--- No idea if this belongs here
-    const sysenv = new Map();
-    sysenv.set("System One", "Environment One");
-    sysenv.set("System Two", "Environment Two");
-    sysenv.set("System Three", "Environment Three");
-    //---
-
-    const extentReport = new ExtentReport(
-      featureExtentTests,
-      {
-        start: this.testRunStartTimestamp,
-        end: this.testRunFinishTimestamp,
-      },
-      sysenv
-    );
+    const extentReport = new ExtentReport(featureExtentTests, {
+      start: this.testRunStartTimestamp,
+      end: this.testRunFinishTimestamp,
+    });
 
     const rep = new NunjuckRender().render(extentReport);
     this.log(rep);
