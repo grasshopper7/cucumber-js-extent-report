@@ -62,13 +62,21 @@
 											{# Step Scenario Outline level #}
 											{% set collapseStepSO = "collapse" if exrow.status == 'Pass' else ""%}
 											<div class="card-body mt-3 {{ collapseStepSO }}">
+												<div class="m-b-5">														
+													{% for tag in exrow.categories %}
+														<span class="ico badge badge-default"><i class="fa fa-tag"><span class="name m-l-5">{{ tag }}</span></i></span>
+													{% endfor %}
+												</div>
                 				{% for step in exrow.childTests %}
                   				<div class="step {{ step.status | lower}}-bg">
-                    				<span>{{step.type}} {{ step.name }}</span>
-														{{ testdisplay.step_docstring(step) }}
-														{{ testdisplay.step_datatable(step) }}
-														{{ testdisplay.step_error_display(step)}}
-														{{ testdisplay.step_logs_display(step) }}
+                    				<span class="badge log {{ step.status | lower}}-bg mr-2">{{ step.status | first }}</span>
+														<span>{{step.type}} {{ step.name }}</span>
+														<div class="m-l-10">
+															{{ testdisplay.step_docstring(step) }}
+															{{ testdisplay.step_datatable(step) }}
+															{{ testdisplay.step_error_display(step)}}
+															{{ testdisplay.step_logs_display(step) }}
+														</div>
 				                  </div>
                 				{% endfor %}
               				</div>
@@ -81,13 +89,21 @@
 								{% set collapseStepSc = "collapse" if scenorout.status == 'Pass' else ""%}
 									<div class="{{ collapseStepSc }}">
 										<div class="card-body">
+											<div class="m-b-5">														
+												{% for tag in scenorout.categories %}
+													<span class="ico badge badge-default"><i class="fa fa-tag"><span class="name m-l-5">{{ tag }}</span></i></span>
+												{% endfor %}
+											</div>
                 			{% for step in scenorout.childTests %}
                   			<div class="step {{ step.status | lower}}-bg">
+													<span class="badge log {{ step.status | lower}}-bg mr-2">{{ step.status | first }}</span>
                     			<span>{{step.type}} {{ step.name }}</span>
-													{{ testdisplay.step_docstring(step) }}
-													{{ testdisplay.step_datatable(step) }}													
-													{{ testdisplay.step_error_display(step)}}
-													{{ testdisplay.step_logs_display(step) }}
+													<div class="m-l-10">
+														{{ testdisplay.step_docstring(step) }}
+														{{ testdisplay.step_datatable(step) }}													
+														{{ testdisplay.step_error_display(step)}}
+														{{ testdisplay.step_logs_display(step) }}
+													</div>
 				                </div>
                 			{% endfor %}
               				</div>
