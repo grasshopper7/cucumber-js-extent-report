@@ -1,0 +1,9 @@
+{% macro step_docstring(step) %}
+	{% for log in step.logs %}
+		{% if log.type == 'docstring' %}
+			<div class="row"><div class="col-md-12">
+				<textarea readonly class="code-block">{{ log.content }}</textarea>
+			</div></div>
+		{% endif %}
+	{% endfor %}
+{% endmacro %}

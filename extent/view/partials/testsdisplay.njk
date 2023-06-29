@@ -1,4 +1,7 @@
-{% import "partials/macros/test_macros.njk" as testdisplay %}
+{% import "partials/macros/step_logs_macro.njk" as stepLogs %}
+{% import "partials/macros/step_error_macro.njk" as stepError %}
+{% import "partials/macros/datatable_macro.njk" as datatable %}
+{% import "partials/macros/docstring_macro.njk" as docstring %}
 
 <ul class="test-list-item">
 	{% for test in report.tests %}
@@ -72,10 +75,10 @@
                     				<span class="badge log {{ step.status | lower}}-bg mr-2">{{ step.status | first }}</span>
 														<span>{{step.type}} {{ step.name }}</span>
 														<div class="m-l-10">
-															{{ testdisplay.step_docstring(step) }}
-															{{ testdisplay.step_datatable(step) }}
-															{{ testdisplay.step_error_display(step)}}
-															{{ testdisplay.step_logs_display(step) }}
+															{{ docstring.step_docstring(step) }}
+															{{ datatable.step_datatable(step) }}
+															{{ stepError.step_error_display(step)}}
+															{{ stepLogs.step_logs_display(step) }}
 														</div>
 				                  </div>
                 				{% endfor %}
@@ -99,10 +102,10 @@
 													<span class="badge log {{ step.status | lower}}-bg mr-2">{{ step.status | first }}</span>
                     			<span>{{step.type}} {{ step.name }}</span>
 													<div class="m-l-10">
-														{{ testdisplay.step_docstring(step) }}
-														{{ testdisplay.step_datatable(step) }}													
-														{{ testdisplay.step_error_display(step)}}
-														{{ testdisplay.step_logs_display(step) }}
+														{{ docstring.step_docstring(step) }}
+														{{ datatable.step_datatable(step) }}													
+														{{ stepError.step_error_display(step)}}
+														{{ stepLogs.step_logs_display(step) }}
 													</div>
 				                </div>
                 			{% endfor %}

@@ -1,0 +1,19 @@
+{% macro step_datatable(step) %}
+	{% for log in step.logs %}
+		{% if log.type == 'datatable' %}
+			<div class="m-t-10">
+				<table class="markup-table table ">
+					<tbody>
+						{% for row in log.table %}
+							<tr>
+							{% for cell in row%}
+								<td> {{cell}} </td>
+							{% endfor %}
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		{% endif %}
+	{% endfor %}
+{% endmacro %}
