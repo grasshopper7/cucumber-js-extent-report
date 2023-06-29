@@ -1,30 +1,30 @@
 {% macro attribute_display(attrType, attributes) %}
 	{% if attributes.size >0 %}
-	<div class="test-wrapper row view {{ attrType | lower }}-view attributes-view">
-		<div class="test-list">
-			{{ attributes_summary(attrType ,attributes.size) }}
-			
-			<div class="test-list-wrapper scrollable">
+		<div class="test-wrapper row view {{ attrType | lower }}-view attributes-view">
+			<div class="test-list">
+				{{ attributes_summary(attrType ,attributes.size) }}
 				
-				<ul class="test-list-item">
-					{% for att, attribute in attributes %}
-						
-						<li class="test-item">
+				<div class="test-list-wrapper scrollable">
+					
+					<ul class="test-list-item">
+						{% for att, attribute in attributes %}
 							
-							{{ attribute_details(attribute) }}
-							{{ attribute_tests_details(attribute) }}    
-						</li>
-					{% endfor %}
-				</ul>
+							<li class="test-item">
+								
+								{{ attribute_details(attribute) }}
+								{{ attribute_tests_details(attribute) }}    
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+			
+			<div class="test-content scrollable">
+				<div class="test-content-detail">
+					<div class="detail-body"></div>
+				</div>
 			</div>
 		</div>
-		
-		<div class="test-content scrollable">
-			<div class="test-content-detail">
-				<div class="detail-body"></div>
-			</div>
-		</div>
-	</div>
 	{% endif %}
 {% endmacro %}
 

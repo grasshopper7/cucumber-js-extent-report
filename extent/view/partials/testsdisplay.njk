@@ -3,7 +3,7 @@
 <ul class="test-list-item">
 	{% for test in report.tests %}
 
-		<li class="test-item"  status="{{test.status | lower}}" test-id="{{test.id}}" author="" tag="" device="">
+		<li class="test-item" status="{{test.status | lower}}" test-id="{{test.id}}" author="" tag='{{ test.categories | join(" ") }}' device="">
 			
 			{# Left side Feature details #}
 			<div class="test-detail">

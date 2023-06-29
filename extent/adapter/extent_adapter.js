@@ -108,9 +108,11 @@ class ExtentCucumberJSAdapter extends Formatter {
         this.testCaseIdToTiming.get(testCaseAttempt.testCase.id)
       );
 
-      testCaseAttempt.pickle.tags.forEach((t) =>
-        scenarioTest.categories.push(t.name)
-      );
+      testCaseAttempt.pickle.tags.forEach((t) => {
+        scenarioTest.categories.push(t.name);
+        if (!featureTest.categories.includes(t.name))
+          featureTest.categories.push(t.name);
+      });
 
       scenarioTestParent.addChildTest(scenarioTest);
 
