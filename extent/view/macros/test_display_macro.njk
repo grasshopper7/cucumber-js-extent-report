@@ -1,0 +1,72 @@
+{% import "macros/step_logs_macro.njk" as stepLogs %}
+{% import "macros/step_error_macro.njk" as stepError %}
+{% import "macros/datatable_macro.njk" as datatable %}
+{% import "macros/docstring_macro.njk" as docstring %}
+
+{% macro feature_details_left_display(test) %}
+  <div class="test-detail">
+    <p class="name">{{ test.name }}</p>
+    <p class="text-sm">
+      <span>{{ test.start | time}}</span> / <span>{{ test.duration | duration}}</span>
+        <span class="badge {{test.status | lower}}-bg log float-right">{{ test.status }}</span>
+    </p>
+  </div>
+{% endmacro %}
+
+{% macro feature_details_right_display(test) %}
+  <div class="detail-head">
+    <div class="p-v-10">
+      <div class="info">
+        <h5 class="test-status text-{{test.status | lower}}">{{test.name}}</h5>
+        <span class='badge badge-success'>{{test.start | datetime}}</span>
+        <span class='badge badge-danger'>{{test.end | datetime}}</span>
+        <span class='badge badge-default'>{{test.duration | duration}}</span>&middot; 
+        <span class='uri-anchor badge badge-default'>#test-id={{test.id}}</span>
+        <span class='badge badge-default pointer float-right ml-1 et'><i class="fa fa-chevron-down"></i></span>
+        <span class='badge badge-default pointer float-right ct'><i class="fa fa-chevron-up"></i></span>
+      </div>
+      {% if test.description %}
+        <div class="m-t-10 m-l-5">{{test.description | trim}} </div>
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro scenout_or_scen_details_display(scen) %}
+  <div class="card-header" role="tab">
+    <div class="card-title">
+      <div class="node" id="{{scen.id}}"><span class="badge log {{ scen.status | lower}}-bg mr-2">{{ scen.status }}</span>{{ scen.name }}</div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro scen_in_scenout_details_display(scen) %}
+  <div class="card-header">
+    <div class="card-title outline-child">
+      <div class="node" id="{{scen.id}}"><span class="badge log {{ scen.status | lower}}-bg mr-2">{{ scen.status }}</span>{{ scen.name }}</div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro scenario_tags_display(tags) %}
+  <div class="m-b-5">														
+    {% for tag in tags %}
+      <span class="ico badge badge-default"><i class="fa fa-tag"><span class="name m-l-5">{{ tag }}</span></i></span>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro steps_display(steps) %}
+  {% for step in steps %}
+    <div class="step {{ step.status | lower}}-bg">
+      <span class="badge log {{ step.status | lower}}-bg mr-2">{{ step.status | first }}</span>
+      <span>{{step.type}} {{ step.name }}</span>
+      <div class="m-l-10">
+        {{ docstring.step_docstring(step) }}
+        {{ datatable.step_datatable(step) }}
+        {{ stepError.step_error_display(step)}}
+        {{ stepLogs.step_logs_display(step) }}
+      </div>
+    </div>
+  {% endfor %}
+{% endmacro %}

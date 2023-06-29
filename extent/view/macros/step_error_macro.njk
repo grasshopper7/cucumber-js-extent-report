@@ -1,0 +1,11 @@
+{% macro step_error_display(step) %}
+	{% for log in step.logs %}
+		{% if log.type == 'error' %}
+			<div class="row">
+				<div class="col-md-12">
+					<textarea disabled class="code-block">{{ log.message }}</textarea>
+				</div>
+			</div>
+		{% endif %}
+	{% endfor %}
+{% endmacro %}
