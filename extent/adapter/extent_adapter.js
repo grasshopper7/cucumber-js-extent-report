@@ -12,8 +12,6 @@ class ExtentCucumberJSAdapter extends Formatter {
   constructor(options) {
     super(options);
     options.eventBroadcaster.on("envelope", (envelope) => {
-      //console.log(JSON.stringify(envelope, null, 2));
-
       if (envelope.testRunStarted) this.testRunStarted(envelope);
       if (envelope.testCaseStarted) this.testCaseStarted(envelope);
       if (envelope.testCaseFinished) this.testCaseFinished(envelope);
@@ -55,8 +53,6 @@ class ExtentCucumberJSAdapter extends Formatter {
     const scenariOutlineIdToTest = new Map();
 
     this.eventDataCollector.getTestCaseAttempts().forEach((testCaseAttempt) => {
-      //console.log(JSON.stringify(testCaseAttempt, null, 2));
-
       // FEATURE Extent Test
       const featureUri = testCaseAttempt.gherkinDocument.uri;
       let featureTest = featureUriToTest.get(featureUri);

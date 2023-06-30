@@ -1,7 +1,7 @@
 {
-  "name": "cucumber-js-extent-report",
+  "name": "cucumber-js-extent",
   "version": "1.0.0",
-  "description": "This formatter generates the Spark Extent report",
+  "description": "Generates Extent Report for cucumber-js execution.",
   "main": "./extent/adapter/extent_adapter.js",
   "scripts": {
     "test": ""
