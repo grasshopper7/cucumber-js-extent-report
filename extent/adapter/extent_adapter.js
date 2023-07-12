@@ -54,14 +54,18 @@ class ExtentCucumberJSAdapter extends Formatter {
 
     this.eventDataCollector.getTestCaseAttempts().forEach((testCaseAttempt) => {
       // FEATURE Extent Test
-      const featureUri = testCaseAttempt.gherkinDocument.uri;
+      const { gherkinDocument } = testCaseAttempt;
+      const testCaseId = testCaseAttempt.pickle.astNodeIds[0];
+      const featureUri = gherkinDocument.uri;
       let featureTest = featureUriToTest.get(featureUri);
 
       if (!featureTest) {
+        const { feature } = gherkinDocument;
+
         featureTest = new ExtentTest(
           "Feature",
-          testCaseAttempt.gherkinDocument.feature.name,
-          testCaseAttempt.gherkinDocument.feature.description
+          feature.name,
+          feature.description
         );
 
         featureUriToTest.set(featureUri, featureTest);
@@ -71,25 +75,18 @@ class ExtentCucumberJSAdapter extends Formatter {
       //SCENARIO OUTLINE Extent Test
       let scenarioTestParent = featureUriToTest.get(featureUri);
       let scenarioOutlineTest;
-      if (testCaseAttempt.pickle.astNodeIds.length == 2) {
-        const scenarioOutlineId = testCaseAttempt.pickle.astNodeIds[0];
+      const { GherkinDocumentParser: gherkinDocParser } = formatterHelpers;
+      const { id, keyword, name, description } =
+        gherkinDocParser.getGherkinScenarioMap(gherkinDocument)[testCaseId];
 
-        const nameDesc = scenarioNameAndDescription(
-          testCaseAttempt.gherkinDocument,
-          scenarioOutlineId
-        );
-
-        if (!scenariOutlineIdToTest.has(scenarioOutlineId)) {
-          scenarioOutlineTest = new ExtentTest(
-            "Scenario Outline",
-            nameDesc.name,
-            nameDesc.description
-          );
+      if (keyword === "Scenario Outline") {
+        if (!scenariOutlineIdToTest.has(id)) {
+          scenarioOutlineTest = new ExtentTest(keyword, name, description);
           featureTest.addChildTest(scenarioOutlineTest);
-          scenariOutlineIdToTest.set(scenarioOutlineId, scenarioOutlineTest);
+          scenariOutlineIdToTest.set(id, scenarioOutlineTest);
         }
 
-        scenarioTestParent = scenariOutlineIdToTest.get(scenarioOutlineId);
+        scenarioTestParent = scenariOutlineIdToTest.get(id);
       }
 
       //SCENARIO Extent Test
@@ -109,6 +106,14 @@ class ExtentCucumberJSAdapter extends Formatter {
         if (!featureTest.categories.includes(t.name))
           featureTest.categories.push(t.name);
       });
+
+      const rules = gherkinDocParser.getGherkinExampleRuleMap(
+        testCaseAttempt.gherkinDocument
+      );
+      if (Object.hasOwn(rules, testCaseId)) {
+        const { keyword, name } = rules[testCaseId];
+        scenarioTest.addRule(name);
+      }
 
       scenarioTestParent.addChildTest(scenarioTest);
 
@@ -165,24 +170,5 @@ class ExtentCucumberJSAdapter extends Formatter {
     this.log(rep);
   }
 }
-
-const scenarioNameAndDescription = function (gherkinDocument, astNodeId) {
-  for (const c of gherkinDocument.feature.children) {
-    if (c.scenario && c.scenario.id === astNodeId)
-      return {
-        name: c.scenario.name,
-        description: c.scenario.description,
-      };
-
-    if (c.rule && c.rule.keyword === "Rule")
-      for (const r of c.rule.children) {
-        if (r.scenario.id === astNodeId)
-          return {
-            name: r.scenario.name,
-            description: r.scenario.description,
-          };
-      }
-  }
-};
 
 module.exports = ExtentCucumberJSAdapter;

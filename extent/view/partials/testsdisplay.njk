@@ -35,6 +35,7 @@
 											{# Step Scenario Outline level #}
 											{% set collapseStepSO = "collapse" if exrow.status == 'Pass' else ""%}
 											<div class="card-body mt-3 {{ collapseStepSO }}">
+												{{ testdisplay.scenario_rules_display(exrow) }}
 												{{ testdisplay.scenario_tags_display(exrow.categories) }}
 												{{ testdisplay.steps_display(exrow.childTests) }}
               				</div>
@@ -47,6 +48,7 @@
 								{% set collapseStepSc = "collapse" if scenorout.status == 'Pass' else ""%}
 									<div class="{{ collapseStepSc }}">
 										<div class="card-body">
+											{{ testdisplay.scenario_rules_display(scenorout) }}
 											{{ testdisplay.scenario_tags_display(scenorout.categories) }}
 											{{ testdisplay.steps_display(scenorout.childTests) }}
               			</div>

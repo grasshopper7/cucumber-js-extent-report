@@ -23,6 +23,11 @@ class ExtentTest {
     this.duration;
     this.parent;
     this.logs = [];
+    this.rule = "";
+  }
+
+  addRule(rule) {
+    this.rule = rule;
   }
 
   addChildTest(childTest) {
