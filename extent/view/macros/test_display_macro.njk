@@ -51,7 +51,7 @@
 {% macro scenario_rules_display(scen) %}
   {% if scen.rule | length > 0%}
     <div class="m-b-5">														
-      <span class="ico badge badge-default"><span class="name m-l-5">{{ scen.rule }}</span></span>
+      <span class="ico badge badge-default">Rule : </span><span  class="name m-l-5">{{ scen.rule }}</span>
     </div>
   {% endif %}
 {% endmacro %}
