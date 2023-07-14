@@ -35,7 +35,7 @@ class ReportStats {
 
   processTests(tests) {
     tests.forEach((feature) => {
-      updateStatusCount(feature.status, this.statusFeatureCounts);
+      this.updateTestsStatusCount(feature.status, this.statusFeatureCounts);
 
       feature.childTests.forEach((scen) => {
         if (scen.type === "Scenario Outline") {
@@ -50,9 +50,9 @@ class ReportStats {
   }
 
   updateData(scenario) {
-    updateStatusCount(scenario.status, this.statusScenarioCounts);
-    updateStepCount(scenario, this.statusStepCounts);
-    updateScenarioAttributes(
+    this.updateTestsStatusCount(scenario.status, this.statusScenarioCounts);
+    this.updateStepCount(scenario, this.statusStepCounts);
+    this.updateScenarioAttributes(
       scenario,
       this.authors,
       this.categories,
@@ -61,97 +61,91 @@ class ReportStats {
       this.rules
     );
   }
-}
 
-const updateScenarioAttributes = function (
-  scenario,
-  authors,
-  categories,
-  devices,
-  exceptions,
-  rules
-) {
-  updateAttributeData(
-    scenario,
-    scenario.authors,
-    authors,
-    (a) => new Author(a)
-  );
+  updateScenarioAttributes(scenario) {
+    this.updateAttributeData(
+      scenario,
+      scenario.authors,
+      this.authors,
+      (a) => new Author(a)
+    );
 
-  updateAttributeData(
-    scenario,
-    scenario.categories,
-    categories,
-    (c) => new Category(c)
-  );
+    this.updateAttributeData(
+      scenario,
+      scenario.categories,
+      this.categories,
+      (c) => new Category(c)
+    );
 
-  updateAttributeData(
-    scenario,
-    scenario.devices,
-    devices,
-    (d) => new Device(d)
-  );
+    this.updateAttributeData(
+      scenario,
+      scenario.devices,
+      this.devices,
+      (d) => new Device(d)
+    );
 
-  updateExceptionData(scenario, exceptions);
-  updateRuleData(scenario, rules);
-};
-
-const updateRuleData = function (scenario, rules) {
-  const rule = scenario.rule;
-  if (rule.length > 0) {
-    let ruleAtt = rules.get(rule);
-    if (!ruleAtt) {
-      ruleAtt = new Rule(rule);
-      rules.set(rule, ruleAtt);
-    }
-    ruleAtt.addTest(scenario);
-    updateAttributeStatusCounts(scenario, ruleAtt);
+    this.updateExceptionData(scenario);
+    this.updateRuleData(scenario);
   }
-};
 
-const updateExceptionData = function (scenario, exceptions) {
-  scenario.childTests.forEach((step) => {
-    step.logs.forEach((log) => {
-      if (log.type === "error") {
-        let excepAtt = exceptions.get(log.class);
-        if (!excepAtt) {
-          excepAtt = new Exception(log.class);
-          exceptions.set(log.class, excepAtt);
-        }
-        excepAtt.addTest(step);
-        updateAttributeStatusCounts(step, excepAtt);
+  updateRuleData(scenario) {
+    const rule = scenario.rule;
+    if (rule.length > 0) {
+      let ruleAtt = this.rules.get(rule);
+      if (!ruleAtt) {
+        ruleAtt = new Rule(rule);
+        this.rules.set(rule, ruleAtt);
       }
-    });
-  });
-};
-
-const updateAttributeData = function (scenario, scenAtts, attributes, initAtt) {
-  scenAtts.forEach((sc) => {
-    let attribute = attributes.get(sc);
-    if (!attribute) {
-      attribute = initAtt(sc);
-      attributes.set(sc, attribute);
+      ruleAtt.addTest(scenario);
+      this.updateAttributeTestsStatusCounts(scenario, ruleAtt);
     }
-    attribute.addTest(scenario);
-    updateAttributeStatusCounts(scenario, attribute);
-  });
-};
+  }
 
-const updateStepCount = function (scenario, stepCounts) {
-  const hooks = ["Before", "After", "BeforeStep", "AfterStep"];
-  scenario.childTests.forEach((st) => {
-    if (!hooks.includes(st.type)) updateStatusCount(st.status, stepCounts);
-  });
-};
+  updateExceptionData(scenario) {
+    scenario.childTests.forEach((step) => {
+      step.logs.forEach((log) => {
+        if (log.type === "error") {
+          let excepAtt = this.exceptions.get(log.class);
+          if (!excepAtt) {
+            excepAtt = new Exception(log.class);
+            this.exceptions.set(log.class, excepAtt);
+          }
+          excepAtt.addTest(step);
+          this.updateAttributeTestsStatusCounts(step, excepAtt);
+        }
+      });
+    });
+  }
 
-const updateStatusCount = function (testStatus, statusCounts) {
-  statusCounts.set(testStatus, statusCounts.get(testStatus) + 1);
-};
+  updateAttributeData(scenario, scenAtts, attributes, initAtt) {
+    scenAtts.forEach((sc) => {
+      let attribute = attributes.get(sc);
+      if (!attribute) {
+        attribute = initAtt(sc);
+        attributes.set(sc, attribute);
+      }
+      attribute.addTest(scenario);
+      this.updateAttributeTestsStatusCounts(scenario, attribute);
+    });
+  }
 
-const updateAttributeStatusCounts = function (test, attribute) {
-  if (test.status === "Pass") attribute.passCnt = attribute.passCnt + 1;
-  else if (test.status === "Fail") attribute.failCnt = attribute.failCnt + 1;
-  else if (test.status === "Skip") attribute.skipCnt = attribute.skipCnt + 1;
-};
+  updateStepCount(scenario, stepCounts) {
+    const hooks = ["Before", "After", "BeforeStep", "AfterStep"];
+    scenario.childTests.forEach((st) => {
+      if (!hooks.includes(st.type))
+        this.updateTestsStatusCount(st.status, stepCounts);
+    });
+  }
+
+  updateTestsStatusCount(testStatus, statusCounts) {
+    statusCounts.set(testStatus, statusCounts.get(testStatus) + 1);
+  }
+
+  updateAttributeTestsStatusCounts(test, attribute) {
+    if (test.status === "Pass") attribute.passCnt = attribute.passCnt + 1;
+    else if (test.status === "Fail") attribute.failCnt = attribute.failCnt + 1;
+    else if (test.status === "Skip") attribute.skipCnt = attribute.skipCnt + 1;
+  }
+}
 
 module.exports = ReportStats;
