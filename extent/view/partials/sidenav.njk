@@ -41,13 +41,13 @@
               </a>
             </li>
           {% endif %}
-          {# {% if report.stats.rules.size > 0 %} #}
+          {% if report.stats.rules.size > 0 %}
             <li class="nav-item dropdown" onclick="toggleView('rule-view')">
               <a id="nav-rule" class="dropdown-toggle" href="#">
                 <span class="ico" title="rules"><i class="fa fa-cubes"></i></span>
               </a>
             </li>
-          {# {% endif %} #}
+          {% endif %}
         </ul>
     </div>
 </div>
