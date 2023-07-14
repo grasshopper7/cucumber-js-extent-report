@@ -1,4 +1,10 @@
-const { Author, Category, Device, Exception } = require("./test_attribute.js");
+const {
+  Author,
+  Category,
+  Device,
+  Exception,
+  Rule,
+} = require("./test_attribute.js");
 
 class ReportStats {
   constructor(tests, config) {
@@ -11,6 +17,7 @@ class ReportStats {
     this.categories = new Map();
     this.devices = new Map();
     this.exceptions = new Map();
+    this.rules = new Map();
 
     this.processSysEnv(config);
     this.processTests(tests);
@@ -50,7 +57,8 @@ class ReportStats {
       this.authors,
       this.categories,
       this.devices,
-      this.exceptions
+      this.exceptions,
+      this.rules
     );
   }
 }
@@ -60,7 +68,8 @@ const updateScenarioAttributes = function (
   authors,
   categories,
   devices,
-  exceptions
+  exceptions,
+  rules
 ) {
   updateAttributeData(
     scenario,
@@ -84,6 +93,20 @@ const updateScenarioAttributes = function (
   );
 
   updateExceptionData(scenario, exceptions);
+  updateRuleData(scenario, rules);
+};
+
+const updateRuleData = function (scenario, rules) {
+  const rule = scenario.rule;
+  if (rule.length > 0) {
+    let ruleAtt = rules.get(rule);
+    if (!ruleAtt) {
+      ruleAtt = new Rule(rule);
+      rules.set(rule, ruleAtt);
+    }
+    ruleAtt.addTest(scenario);
+    updateAttributeStatusCounts(scenario, ruleAtt);
+  }
 };
 
 const updateExceptionData = function (scenario, exceptions) {
@@ -96,12 +119,7 @@ const updateExceptionData = function (scenario, exceptions) {
           exceptions.set(log.class, excepAtt);
         }
         excepAtt.addTest(step);
-
-        if (step.status === "Pass") excepAtt.passCnt = excepAtt.passCnt + 1;
-        else if (step.status === "Fail")
-          excepAtt.failCnt = excepAtt.failCnt + 1;
-        else if (step.status === "Skip")
-          excepAtt.skipCnt = excepAtt.skipCnt + 1;
+        updateAttributeStatusCounts(step, excepAtt);
       }
     });
   });
@@ -115,12 +133,7 @@ const updateAttributeData = function (scenario, scenAtts, attributes, initAtt) {
       attributes.set(sc, attribute);
     }
     attribute.addTest(scenario);
-
-    if (scenario.status === "Pass") attribute.passCnt = attribute.passCnt + 1;
-    else if (scenario.status === "Fail")
-      attribute.failCnt = attribute.failCnt + 1;
-    else if (scenario.status === "Skip")
-      attribute.skipCnt = attribute.skipCnt + 1;
+    updateAttributeStatusCounts(scenario, attribute);
   });
 };
 
@@ -133,6 +146,12 @@ const updateStepCount = function (scenario, stepCounts) {
 
 const updateStatusCount = function (testStatus, statusCounts) {
   statusCounts.set(testStatus, statusCounts.get(testStatus) + 1);
+};
+
+const updateAttributeStatusCounts = function (test, attribute) {
+  if (test.status === "Pass") attribute.passCnt = attribute.passCnt + 1;
+  else if (test.status === "Fail") attribute.failCnt = attribute.failCnt + 1;
+  else if (test.status === "Skip") attribute.skipCnt = attribute.skipCnt + 1;
 };
 
 module.exports = ReportStats;

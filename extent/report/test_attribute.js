@@ -62,4 +62,10 @@ class Exception extends TestAttribute {
   }
 }
 
-module.exports = { Author, Category, Device, Exception };
+class Rule extends TestAttribute {
+  constructor(name) {
+    super(name, "rule");
+  }
+}
+
+module.exports = { Author, Category, Device, Exception, Rule };

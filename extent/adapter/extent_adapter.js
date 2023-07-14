@@ -61,7 +61,6 @@ class ExtentCucumberJSAdapter extends Formatter {
 
       if (!featureTest) {
         const { feature } = gherkinDocument;
-
         featureTest = new ExtentTest(
           "Feature",
           feature.name,
@@ -127,9 +126,8 @@ class ExtentCucumberJSAdapter extends Formatter {
       });
 
       parsed.testSteps.forEach((testStep) => {
-        //console.log(JSON.stringify(testStep, null, 2));
-
         let desc = "";
+
         if (testStep.actionLocation)
           desc =
             testStep.actionLocation.uri + ":" + testStep.actionLocation.line;
