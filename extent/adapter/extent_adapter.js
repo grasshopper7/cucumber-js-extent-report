@@ -52,112 +52,121 @@ class ExtentCucumberJSAdapter extends Formatter {
     const featureUriToTest = new Map();
     const scenariOutlineIdToTest = new Map();
 
-    this.eventDataCollector.getTestCaseAttempts().forEach((testCaseAttempt) => {
-      // FEATURE Extent Test
-      const { gherkinDocument } = testCaseAttempt;
-      const testCaseId = testCaseAttempt.pickle.astNodeIds[0];
-      const featureUri = gherkinDocument.uri;
-      let featureTest = featureUriToTest.get(featureUri);
-
-      if (!featureTest) {
-        const { feature } = gherkinDocument;
-        featureTest = new ExtentTest(
-          "Feature",
-          feature.name,
-          feature.description
+    this.eventDataCollector
+      .getTestCaseAttempts()
+      .filter((t) => !t.attempt)
+      .forEach((testCaseAttempt) => {
+        console.log(
+          testCaseAttempt.pickle.name,
+          testCaseAttempt.attempt,
+          testCaseAttempt.willBeRetried
         );
 
-        featureUriToTest.set(featureUri, featureTest);
-        featureExtentTests.push(featureTest);
-      }
+        // FEATURE Extent Test
+        const { gherkinDocument } = testCaseAttempt;
+        const testCaseId = testCaseAttempt.pickle.astNodeIds[0];
+        const featureUri = gherkinDocument.uri;
+        let featureTest = featureUriToTest.get(featureUri);
 
-      //SCENARIO OUTLINE Extent Test
-      let scenarioTestParent = featureUriToTest.get(featureUri);
-      let scenarioOutlineTest;
-      const { GherkinDocumentParser: gherkinDocParser } = formatterHelpers;
-      const { id, keyword, name, description } =
-        gherkinDocParser.getGherkinScenarioMap(gherkinDocument)[testCaseId];
+        if (!featureTest) {
+          const { feature } = gherkinDocument;
+          featureTest = new ExtentTest(
+            "Feature",
+            feature.name,
+            feature.description
+          );
 
-      if (keyword === "Scenario Outline") {
-        if (!scenariOutlineIdToTest.has(id)) {
-          scenarioOutlineTest = new ExtentTest(keyword, name, description);
-          featureTest.addChildTest(scenarioOutlineTest);
-          scenariOutlineIdToTest.set(id, scenarioOutlineTest);
+          featureUriToTest.set(featureUri, featureTest);
+          featureExtentTests.push(featureTest);
         }
 
-        scenarioTestParent = scenariOutlineIdToTest.get(id);
-      }
+        //SCENARIO OUTLINE Extent Test
+        let scenarioTestParent = featureUriToTest.get(featureUri);
+        let scenarioOutlineTest;
+        const { GherkinDocumentParser: gherkinDocParser } = formatterHelpers;
+        const { id, keyword, name, description } =
+          gherkinDocParser.getGherkinScenarioMap(gherkinDocument)[testCaseId];
 
-      //SCENARIO Extent Test
-      //Add timestamp, start, end & duration
-      //Get Scenario description from gherkinDocument envelope (Any need??)
-      const scenarioTest = new ExtentTest(
-        "Scenario",
-        testCaseAttempt.pickle.name,
-        ""
-      );
-      scenarioTest.addTimeStamp(
-        this.testCaseIdToTiming.get(testCaseAttempt.testCase.id)
-      );
+        if (keyword === "Scenario Outline") {
+          if (!scenariOutlineIdToTest.has(id)) {
+            scenarioOutlineTest = new ExtentTest(keyword, name, description);
+            featureTest.addChildTest(scenarioOutlineTest);
+            scenariOutlineIdToTest.set(id, scenarioOutlineTest);
+          }
 
-      testCaseAttempt.pickle.tags.forEach((t) => {
-        scenarioTest.categories.push(t.name);
-        if (!featureTest.categories.includes(t.name))
-          featureTest.categories.push(t.name);
-      });
+          scenarioTestParent = scenariOutlineIdToTest.get(id);
+        }
 
-      const rules = gherkinDocParser.getGherkinExampleRuleMap(
-        testCaseAttempt.gherkinDocument
-      );
-      if (Object.hasOwn(rules, testCaseId)) {
-        const { keyword, name } = rules[testCaseId];
-        scenarioTest.addRule(name);
-      }
-
-      scenarioTestParent.addChildTest(scenarioTest);
-
-      //STEP & HOOK Extent Test
-      // Add duration
-      const parsed = formatterHelpers.parseTestCaseAttempt({
-        cwd: this.cwd,
-        snippetBuilder: this.snippetBuilder,
-        supportCodeLibrary: this.supportCodeLibrary,
-        testCaseAttempt,
-      });
-
-      parsed.testSteps.forEach((testStep) => {
-        let desc = "";
-
-        if (testStep.actionLocation)
-          desc =
-            testStep.actionLocation.uri + ":" + testStep.actionLocation.line;
-        else if (testStep.sourceLocation)
-          desc =
-            testStep.sourceLocation.uri + ":" + testStep.sourceLocation.line;
-
-        const stepHookTest = new ExtentTest(
-          testStep.keyword,
-          testStep.text ||
-            testStep.actionLocation.uri + ":" + testStep.actionLocation.line,
-          desc
+        //SCENARIO Extent Test
+        //Add timestamp, start, end & duration
+        //Get Scenario description from gherkinDocument envelope (Any need??)
+        const scenarioTest = new ExtentTest(
+          "Scenario",
+          testCaseAttempt.pickle.name,
+          ""
         );
-        stepHookTest.status = convertStatus(testStep.result.status);
-        stepHookTest.addDuration(testStep.result.duration);
-        if (testStep.argument && testStep.argument.docString)
-          stepHookTest.addDocString(testStep.argument.docString.content);
-        if (testStep.argument && testStep.argument.dataTable)
-          stepHookTest.addDataTable(testStep.argument.dataTable.rows);
-        stepHookTest.addLogs(testStep.attachments);
-        stepHookTest.addError(testStep.result);
-        scenarioTest.addChildTest(stepHookTest);
-        scenarioTest.status = compareStatus(
-          scenarioTest.status,
-          stepHookTest.status
+        scenarioTest.addTimeStamp(
+          this.testCaseIdToTiming.get(testCaseAttempt.testCase.id)
         );
-      });
 
-      updateTestTimesAndStatus(scenarioTest);
-    });
+        testCaseAttempt.pickle.tags.forEach((t) => {
+          scenarioTest.categories.push(t.name);
+          if (!featureTest.categories.includes(t.name))
+            featureTest.categories.push(t.name);
+        });
+
+        const rules = gherkinDocParser.getGherkinExampleRuleMap(
+          testCaseAttempt.gherkinDocument
+        );
+        if (Object.hasOwn(rules, testCaseId)) {
+          const { keyword, name } = rules[testCaseId];
+          scenarioTest.addRule(name);
+        }
+
+        scenarioTestParent.addChildTest(scenarioTest);
+
+        //STEP & HOOK Extent Test
+        // Add duration
+        const parsed = formatterHelpers.parseTestCaseAttempt({
+          cwd: this.cwd,
+          snippetBuilder: this.snippetBuilder,
+          supportCodeLibrary: this.supportCodeLibrary,
+          testCaseAttempt,
+        });
+
+        parsed.testSteps.forEach((testStep) => {
+          let desc = "";
+
+          if (testStep.actionLocation)
+            desc =
+              testStep.actionLocation.uri + ":" + testStep.actionLocation.line;
+          else if (testStep.sourceLocation)
+            desc =
+              testStep.sourceLocation.uri + ":" + testStep.sourceLocation.line;
+
+          const stepHookTest = new ExtentTest(
+            testStep.keyword,
+            testStep.text ||
+              testStep.actionLocation.uri + ":" + testStep.actionLocation.line,
+            desc
+          );
+          stepHookTest.status = convertStatus(testStep.result.status);
+          stepHookTest.addDuration(testStep.result.duration);
+          if (testStep.argument && testStep.argument.docString)
+            stepHookTest.addDocString(testStep.argument.docString.content);
+          if (testStep.argument && testStep.argument.dataTable)
+            stepHookTest.addDataTable(testStep.argument.dataTable.rows);
+          stepHookTest.addLogs(testStep.attachments);
+          stepHookTest.addError(testStep.result);
+          scenarioTest.addChildTest(stepHookTest);
+          scenarioTest.status = compareStatus(
+            scenarioTest.status,
+            stepHookTest.status
+          );
+        });
+
+        updateTestTimesAndStatus(scenarioTest);
+      });
 
     const extentReport = new ExtentReport(featureExtentTests, {
       start: this.testRunStartTimestamp,
