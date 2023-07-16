@@ -1,7 +1,7 @@
 {
   "name": "cucumber-js-extent",
   "version": "1.0.0",
-  "description": "Generates Extent Report for cucumber-js execution.",
+  "description": "Generates Spark Extent Report for cucumber-js execution.",
   "main": "./extent/adapter/extent_adapter.js",
   "scripts": {
     "test": ""
@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@cucumber/cucumber": "^9.1.2",
+    "@cucumber/cucumber": "^9.3.0",
     "chai": "^4.3.4"
   },
   "dependencies": {
