@@ -20,7 +20,7 @@ class NunjuckRender {
 
     env.addFilter("duration", function (duration) {
       return humanizeDuration(duration, {
-        delimiter: ":",
+        delimiter: " ",
         units: ["h", "m", "s", "ms"],
         language: "shortEn",
         languages: {
