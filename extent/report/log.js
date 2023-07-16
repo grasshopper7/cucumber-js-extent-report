@@ -1,4 +1,5 @@
 const Convert = require("ansi-to-html");
+const xmlFormatter = require("xml-formatter");
 
 class Log {
   constructor(type) {
@@ -58,11 +59,21 @@ class AttachmentLog extends Log {
       this.text = prettyANSI(attachment.body);
     } else if (attachment.mediaType.match(/^application\/json/)) {
       this.text = prettyJSON(attachment.body);
+    } else if (attachment.mediaType.match(/^application\/xml/)) {
+      this.text = prettyXML(attachment.body);
     } else {
       this.error = "Media type not supported.";
     }
   }
 }
+
+const prettyXML = function (text) {
+  try {
+    return xmlFormatter(text);
+  } catch (error) {
+    return text;
+  }
+};
 
 const prettyJSON = function (text) {
   try {
@@ -73,7 +84,11 @@ const prettyJSON = function (text) {
 };
 
 const prettyANSI = function (text) {
-  return new Convert().toHtml(text);
+  try {
+    return new Convert().toHtml(text);
+  } catch (error) {
+    return text;
+  }
 };
 
 module.exports = { ErrorLog, DocStringLog, DataTableLog, AttachmentLog };

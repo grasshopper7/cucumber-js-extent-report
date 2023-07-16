@@ -14,10 +14,11 @@
     "chai": "^4.3.4"
   },
   "dependencies": {
-    "nunjucks": "^3.2.4",
+    "ansi-to-html": "^0.7.2",
     "dayjs": "^1.11.8",
     "humanize-duration": "^3.28.0",
-    "ansi-to-html": "^0.7.2",
-    "merge-json": "^0.1.0-b.3"
+    "merge-json": "^0.1.0-b.3",
+    "nunjucks": "^3.2.4",
+    "xml-formatter": "^3.4.1"
   }
 }
