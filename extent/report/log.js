@@ -69,7 +69,7 @@ class AttachmentLog extends Log {
 
 const prettyXML = function (text) {
   try {
-    return xmlFormatter(text);
+    return xmlFormatter(text, { indentation: "  " });
   } catch (error) {
     return text;
   }
