@@ -56,12 +56,6 @@ class ExtentCucumberJSAdapter extends Formatter {
       .getTestCaseAttempts()
       .filter((t) => !t.attempt)
       .forEach((testCaseAttempt) => {
-        console.log(
-          testCaseAttempt.pickle.name,
-          testCaseAttempt.attempt,
-          testCaseAttempt.willBeRetried
-        );
-
         // FEATURE Extent Test
         const { gherkinDocument } = testCaseAttempt;
         const testCaseId = testCaseAttempt.pickle.astNodeIds[0];
@@ -84,12 +78,16 @@ class ExtentCucumberJSAdapter extends Formatter {
         let scenarioTestParent = featureUriToTest.get(featureUri);
         let scenarioOutlineTest;
         const { GherkinDocumentParser: gherkinDocParser } = formatterHelpers;
-        const { id, keyword, name, description } =
+        const { id, keyword, name, description, examples } =
           gherkinDocParser.getGherkinScenarioMap(gherkinDocument)[testCaseId];
 
-        if (keyword === "Scenario Outline") {
+        if (examples.length > 0) {
           if (!scenariOutlineIdToTest.has(id)) {
-            scenarioOutlineTest = new ExtentTest(keyword, name, description);
+            scenarioOutlineTest = new ExtentTest(
+              "Scenario Outline",
+              name,
+              description
+            );
             featureTest.addChildTest(scenarioOutlineTest);
             scenariOutlineIdToTest.set(id, scenarioOutlineTest);
           }
