@@ -2,8 +2,14 @@
 This Cucumber-JS plugin generates the Spark Extent report. This report is a port of the [Extent Report](https://www.extentreports.com/), using JS with Node and Nunjucks templating.
 The design, logic and media artifacts all belong to the [creators](https://github.com/extent-framework) of Extent Report
 
-## DASHBOARD
+### USAGE
+Add to cucumber command
+"scripts": {"test": "cucumber-js  --format cucumber-js-extent:spark.html"}
+Add to devDependencies
+"devDependencies": {"cucumber-js-extent": "^0.0.0"}
+
+### DASHBOARD
 ![Dashboard](js-spark-db.PNG)
 
-## TESTS
+### TESTS
 ![Tests](js-spark-test.PNG)
