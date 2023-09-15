@@ -4,9 +4,10 @@ The design, logic and media artifacts all belong to the [creators](https://githu
 
 ### USAGE
 Add to cucumber command
-"scripts": {"test": "cucumber-js  --format cucumber-js-extent:spark.html"}
+**"scripts": {"test": "cucumber-js  --format cucumber-js-extent:spark.html"}**
+
 Add to devDependencies
-"devDependencies": {"cucumber-js-extent": "^0.0.0"}
+**"devDependencies": {"cucumber-js-extent": "^0.0.0"}**
 
 ### DASHBOARD
 ![Dashboard](js-spark-db.PNG)
