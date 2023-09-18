@@ -1,13 +1,13 @@
 {
   "name": "cucumber-js-extent",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Generates Spark Extent Report for cucumber-js execution.",
   "main": "./extent/adapter/extent_adapter.js",
   "scripts": {
     "test": ""
   },
   "keywords": [],
-  "author": "",
+  "author": "Grasshopper",
   "license": "ISC",
   "devDependencies": {
     "@cucumber/cucumber": "^9.3.0",
@@ -20,5 +20,13 @@
     "merge-json": "^0.1.0-b.3",
     "nunjucks": "^3.2.4",
     "xml-formatter": "^3.4.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grasshopper7/cucumber-js-extent-report.git"
+  },
+  "bugs": {
+    "url": "https://github.com/grasshopper7/cucumber-js-extent-report/issues"
+  },
+  "homepage": "https://github.com/grasshopper7/cucumber-js-extent-report#readme"
 }
