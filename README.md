@@ -11,7 +11,7 @@ Add to cucumber -
 
 Add to devDependencies -
 
-**"devDependencies": {"cucumber-js-extent": "^0.0.0"}**
+**"devDependencies": {"cucumber-js-extent": "^0.1.0"}**
 
 ### DASHBOARD
 
